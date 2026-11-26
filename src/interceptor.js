@@ -14,20 +14,19 @@ export function registerReviewInterceptor(ctx, input) {
   ctx.effect(() => ctx.on('llm/stream', (options, next) => {
     let replacement
     try {
-      if (!options || typeof options !== 'object') return next()
-      const key = options.messages && typeof options.messages === 'object' ? options.messages : options
-      // Bound pathological re-dispatch even if another plugin strips our marker.
-      if ((attempts.get(key) ?? 0) >= 3) return next()
-      replacement = rewriteOptions(options, config)
-      if (replacement && typeof ctx.llm?.stream === 'function') {
-        attempts.set(key, (attempts.get(key) ?? 0) + 1)
-      } else {
-        return next()
+      if (options && typeof options === 'object') {
+        const key = options.messages && typeof options.messages === 'object' ? options.messages : options
+        // Bound pathological re-dispatch even if another plugin strips our marker.
+        if ((attempts.get(key) ?? 0) < 3 && typeof ctx.llm?.stream === 'function') {
+          replacement = rewriteOptions(options, config)
+          if (replacement) attempts.set(key, (attempts.get(key) ?? 0) + 1)
+        }
       }
     } catch {
       ctx.logger?.warn('better-auto-review: rewrite failed; using official request')
-      return next()
+      replacement = undefined
     }
+    if (!replacement) return next()
     // Do not catch or replay model/stream errors: the official reviewer handles failures.
     return ctx.llm.stream(replacement)
   }, { prepend: true }), 'better-auto-review: review preferences')
