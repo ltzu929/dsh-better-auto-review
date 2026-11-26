@@ -82,3 +82,9 @@ test('downstream errors propagate without replay', () => {
   assert.throws(() => h.ctx.llm.stream(original()), /model failed/)
   assert.equal(h.calls, 1)
 })
+
+test('non-review downstream errors are not replayed', () => {
+  const h = harness({}, () => { throw new Error('chat failed') })
+  assert.throws(() => h.ctx.llm.stream(original({ purpose: 'chat' })), /chat failed/)
+  assert.equal(h.calls, 1)
+})
