@@ -17,7 +17,9 @@
     "locale",
     "README.md",
     "README.en.md",
-    "LICENSE"
+    "LICENSE",
+    "docs",
+    "CHANGELOG.md"
   ],
   "repository": {
     "type": "git",
