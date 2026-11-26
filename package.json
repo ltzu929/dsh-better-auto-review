@@ -1,0 +1,54 @@
+{
+  "name": "dsh-better-auto-review",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Configurable review preferences and localized denial reasons for DeepSeek Harness Auto Review.",
+  "license": "MIT",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "cordis.patch.yml",
+    "locale",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ltzu929/dsh-better-auto-review.git"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "auto-review",
+    "i18n"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0-0 <0.3.0-0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": ">=0.0.0-0",
+    "@deepseek-ai/dsh-llm": ">=0.2.0-0 <0.3.0-0",
+    "@deepseek-ai/dsh-experimental-auto-review": ">=0.2.0-0 <0.3.0-0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-experimental-auto-review": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check index.js && node --check src/policy.js && node --check src/interceptor.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
